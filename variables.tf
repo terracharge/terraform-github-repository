@@ -66,3 +66,47 @@ variable "merge_settings" {
     delete_branch_on_merge = false
   }
 }
+
+variable "branches" {
+  type        = set(string)
+  description = "Default branches to add to the repo"
+  default     = ["master", "dev"]
+}
+variable "default_branch" {
+  description = "The default branch of the repository"
+  type        = string
+  default     = "master"
+}
+
+variable "branch_protection" {
+  type = map(object({
+    enforce_admins          = bool
+    conversation_resolution = bool
+    signed_commits          = bool
+    pull_request_reviews = object({
+      dismiss_stale_reviews           = bool
+      code_owner_reviews              = bool
+      required_approving_review_count = number
+    })
+    status_checks = object({
+      strict   = bool
+      contexts = set(string)
+    })
+    restrictions = object({
+      users = set(string)
+      teams = set(string)
+    })
+  }))
+  description = "Branch protection settings"
+}
+variable "app_installations" {
+  type        = set(string)
+  description = "App installations to add to the repo"
+}
+variable "labels" {
+  type = map(object({
+    description = string
+    color       = string
+  }))
+  description = "Labels to add to the repo"
+}
