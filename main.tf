@@ -21,7 +21,7 @@ resource "github_repository" "this" {
   archive_on_destroy   = var.functions.archive
   vulnerability_alerts = var.visibility == "public"
   dynamic "template" {
-    for_each = var.template != null ? toset("1") : {}
+    for_each = var.template != null ? range(1) : range(0)
     content {
       owner      = var.template.owner
       repository = var.template.repository
