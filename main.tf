@@ -63,6 +63,14 @@ resource "github_app_installation_repository" "this" {
 }
 locals {
   labels = {
+    automerge = {
+      description = "Automatically merge pull requests"
+      color       = "#0e8a16"
+    }
+    dependencies = {
+      description = "Labels for managed dependencies i.e. DependaBot"
+      color       = "f1c40f"
+    }
     bug = {
       description = "Something isn't working"
       color       = "d73a4a"
@@ -98,6 +106,50 @@ locals {
     wontfix = {
       description = "This will not be worked on"
       color       = "ffffff"
+    }
+    examples = {
+      description = "Label for examples how to use module"
+      color       = "b60205"
+    }
+    "github-actions" = {
+      description = "Label for GitHub Actions"
+      color       = "BBBCA3"
+    }
+    "needs-triage" = {
+      description = "Newly added issues, prs, etc. which needs to be reviewed"
+      color       = "128DE6"
+    }
+    "size/L" = {
+      description = "Managed by automation to categorize the size of a PR."
+      color       = "453D32"
+    },
+    "size/M" = {
+      description = "Managed by automation to categorize the size of a PR."
+      color       = "453D32"
+    },
+    "size/S" = {
+      description = "Managed by automation to categorize the size of a PR."
+      color       = "453D32"
+    },
+    "size/XS" = {
+      description = "Managed by automation to categorize the size of a PR."
+      color       = "453D32"
+    },
+    "size/XL" = {
+      description = "Managed by automation to categorize the size of a PR."
+      color       = "453D32"
+    },
+    "size/XXL" = {
+      description = "Managed by automation to categorize the size of a PR."
+      color       = "453D32"
+    },
+    stale = {
+      description = "This issue or pull request is stale"
+      color       = "cfd3d7"
+    },
+    "waiting-response" = {
+      description = "Waiting for a response from a reviewer"
+      color       = "0075ca"
     }
   }
 }
