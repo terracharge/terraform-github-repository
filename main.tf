@@ -13,13 +13,10 @@ resource "github_repository" "this" {
   delete_branch_on_merge = var.merge_settings.delete_branch_on_merge
   is_template            = var.functions.template
   has_downloads          = var.functions.downloads
-  auto_init              = true
-  #  gitignore_template     = local.gitignore_template
-  #  license_template       = local.license_template
-  archived = var.functions.archive
-  #  topics                 = local.topics
-  archive_on_destroy   = var.functions.archive
-  vulnerability_alerts = var.visibility == "public"
+  auto_init              = var.template == null
+  archived               = var.functions.archive
+  archive_on_destroy     = var.functions.archive
+  vulnerability_alerts   = var.visibility == "public"
   dynamic "template" {
     for_each = var.template != null ? range(1) : range(0)
     content {
@@ -29,32 +26,41 @@ resource "github_repository" "this" {
   }
 }
 resource "github_branch" "this" {
-  for_each   = var.branches
-  branch     = each.key
-  repository = github_repository.this.name
+  for_each      = toset(var.template != null ? [for k, v in var.branches : k if k != var.default_branch] : var.branches)
+  branch        = each.key
+  repository    = github_repository.this.name
+  source_branch = var.default_branch
 }
 resource "github_branch_default" "this" {
-  branch     = github_branch.this[var.default_branch].branch
+  branch     = var.template != null ? var.default_branch : github_branch.this[var.default_branch].branch
   repository = github_repository.this.name
 }
 resource "github_branch_protection_v3" "this" {
   for_each                        = var.branch_protection
   repository                      = github_repository.this.name
-  branch                          = github_branch.this[each.key].branch
+  branch                          = each.key
   enforce_admins                  = each.value.enforce_admins
   require_conversation_resolution = each.value.conversation_resolution
   require_signed_commits          = each.value.signed_commits
-  required_status_checks {
-    strict   = each.value.status_checks.strict
-    contexts = each.value.status_checks.contexts
+  dynamic "required_status_checks" {
+    for_each = each.value.status_checks != null ? range(1) : range(0)
+    content {
+      strict   = each.value.status_checks.strict
+      contexts = each.value.status_checks.contexts
+    }
   }
-  required_pull_request_reviews {
-    dismiss_stale_reviews = each.value.pull_request_reviews.dismiss_stale_reviews
-    #      dismissal_users                 = each.value.pull_request_reviews.dismissal_users
-    #      dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
-    require_code_owner_reviews      = each.value.pull_request_reviews.code_owner_reviews
-    required_approving_review_count = each.value.pull_request_reviews.approving_review_count
+  dynamic "required_pull_request_reviews" {
+    for_each = each.value.pull_request_reviews != null ? range(1) : range(0)
+    content {
+      dismiss_stale_reviews = each.value.pull_request_reviews.dismiss_stale_reviews
+      #      dismissal_users                 = each.value.pull_request_reviews.dismissal_users
+      #      dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
+      require_code_owner_reviews      = each.value.pull_request_reviews.code_owner_reviews
+      required_approving_review_count = each.value.pull_request_reviews.approving_review_count
+    }
   }
+
+  depends_on = [github_branch.this]
 }
 resource "github_app_installation_repository" "this" {
   for_each        = var.app_installations
@@ -65,7 +71,7 @@ locals {
   labels = {
     automerge = {
       description = "Automatically merge pull requests"
-      color       = "#0e8a16"
+      color       = "0e8a16"
     }
     dependencies = {
       description = "Labels for managed dependencies i.e. DependaBot"
@@ -154,7 +160,7 @@ locals {
   }
 }
 resource "github_issue_label" "this" {
-  for_each    = merge(local.labels, var.labels)
+  for_each    = var.create_default_labels ? merge(local.labels, var.labels) : var.labels
   repository  = github_repository.this.name
   name        = each.key
   description = each.value.description

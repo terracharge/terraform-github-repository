@@ -18,10 +18,6 @@ output "git_clone_url" {
   value       = github_repository.this.git_clone_url
   description = "URL that can be provided to git clone to clone the repository anonymously via the git protocol."
 }
-output "branches" {
-  value       = github_branch.this
-  description = "A map of branch objects keyed by branch name."
-}
 output "issue_labels" {
   value       = github_issue_label.this
   description = "A map of issue labels keyed by label input id or name."

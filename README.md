@@ -34,8 +34,9 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_installations"></a> [app\_installations](#input\_app\_installations) | App installations to add to the repo | `set(string)` | n/a | yes |
-| <a name="input_branch_protection"></a> [branch\_protection](#input\_branch\_protection) | Branch protection settings | <pre>map(object({<br>    enforce_admins          = bool<br>    conversation_resolution = bool<br>    signed_commits          = bool<br>    pull_request_reviews = object({<br>      dismiss_stale_reviews           = bool<br>      code_owner_reviews              = bool<br>      required_approving_review_count = number<br>    })<br>    status_checks = object({<br>      strict   = bool<br>      contexts = set(string)<br>    })<br>    restrictions = object({<br>      users = set(string)<br>      teams = set(string)<br>    })<br>  }))</pre> | n/a | yes |
+| <a name="input_branch_protection"></a> [branch\_protection](#input\_branch\_protection) | Branch protection settings | <pre>map(object({<br>    enforce_admins          = bool<br>    conversation_resolution = bool<br>    signed_commits          = bool<br>    pull_request_reviews = object({<br>      dismiss_stale_reviews  = bool<br>      code_owner_reviews     = bool<br>      approving_review_count = number<br>    })<br>    status_checks = object({<br>      strict   = bool<br>      contexts = set(string)<br>    })<br>    restrictions = object({<br>      users = set(string)<br>      teams = set(string)<br>    })<br>  }))</pre> | n/a | yes |
 | <a name="input_branches"></a> [branches](#input\_branches) | Default branches to add to the repo | `set(string)` | <pre>[<br>  "master",<br>  "dev"<br>]</pre> | no |
+| <a name="input_create_default_labels"></a> [create\_default\_labels](#input\_create\_default\_labels) | Create default labels | `bool` | n/a | yes |
 | <a name="input_default_branch"></a> [default\_branch](#input\_default\_branch) | The default branch of the repository | `string` | `"master"` | no |
 | <a name="input_description"></a> [description](#input\_description) | The description of the repository | `string` | n/a | yes |
 | <a name="input_functions"></a> [functions](#input\_functions) | Enabled functions | <pre>object({<br>    issues    = bool<br>    wiki      = bool<br>    projects  = bool<br>    template  = bool<br>    downloads = bool<br>    topics    = bool<br>    archive   = bool<br>  })</pre> | <pre>{<br>  "archive": false,<br>  "downloads": true,<br>  "issues": true,<br>  "projects": true,<br>  "template": false,<br>  "topics": true,<br>  "wiki": true<br>}</pre> | no |
@@ -51,7 +52,6 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_app_installations"></a> [app\_installations](#output\_app\_installations) | A map of deploy app installations keyed by installation id. |
-| <a name="output_branches"></a> [branches](#output\_branches) | A map of branch objects keyed by branch name. |
 | <a name="output_full_name"></a> [full\_name](#output\_full\_name) | A string of the form 'orgname/reponame'. |
 | <a name="output_git_clone_url"></a> [git\_clone\_url](#output\_git\_clone\_url) | URL that can be provided to git clone to clone the repository anonymously via the git protocol. |
 | <a name="output_html_url"></a> [html\_url](#output\_html\_url) | URL to the repository on the web. |
