@@ -84,9 +84,9 @@ variable "branch_protection" {
     conversation_resolution = bool
     signed_commits          = bool
     pull_request_reviews = object({
-      dismiss_stale_reviews           = bool
-      code_owner_reviews              = bool
-      required_approving_review_count = number
+      dismiss_stale_reviews  = bool
+      code_owner_reviews     = bool
+      approving_review_count = number
     })
     status_checks = object({
       strict   = bool
@@ -102,6 +102,10 @@ variable "branch_protection" {
 variable "app_installations" {
   type        = set(string)
   description = "App installations to add to the repo"
+}
+variable "create_default_labels" {
+  type        = bool
+  description = "Create default labels"
 }
 variable "labels" {
   type = map(object({
